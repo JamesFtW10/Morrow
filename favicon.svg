@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Morrow logo mark">
+  <rect width="32" height="32" fill="#000000" />
+  <circle cx="16" cy="16" r="10.75" fill="none" stroke="#ffffff" stroke-width="1.75" />
+  <path d="M16 16 L16 8.25 A7.75 7.75 0 0 1 19.875 22.712 Z" fill="#ffffff" />
+</svg>

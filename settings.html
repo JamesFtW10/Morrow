@@ -1,0 +1,471 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Shape how Morrow supports your focused work."
+    />
+    <title>Settings — Morrow</title>
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="settings-page">
+    <div class="page">
+      <header class="masthead">
+        <div class="masthead-inner">
+          <a class="brand" href="./index.html" aria-label="Morrow home">
+            <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+              <rect width="32" height="32" class="brand-mark-bg" />
+              <circle cx="16" cy="16" r="10.75" fill="none" class="brand-mark-ring" stroke-width="1.75" />
+              <path d="M16 16 L16 8.25 A7.75 7.75 0 0 1 19.875 22.712 Z" class="brand-mark-wedge" />
+            </svg>
+            <span class="brand-word">Morrow<span aria-hidden="true">.</span></span>
+          </a>
+          <p class="masthead-line">Preferences &amp; calibration.</p>
+          <a class="back-link" href="./index.html">
+            <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+              <path d="M10.5 3.5 6 8l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span>Return to timer</span>
+          </a>
+        </div>
+      </header>
+
+      <main class="layout">
+        <aside class="intro" aria-label="Settings navigation">
+          <h1>Set the conditions.</h1>
+          <p>Small choices that make space for the work you want to do.</p>
+
+          <p class="cadence-preview" id="cadence-preview" aria-live="polite">
+            <span class="preview-label">Active cadence</span>
+            <span class="preview-value" id="preview-value">25 · 05 · 15 min</span>
+          </p>
+
+          <nav class="settings-nav" id="settings-nav" aria-label="Settings sections">
+            <a href="#ritual" aria-current="location">Focus ritual</a>
+            <a href="#sound">Sound &amp; alerts</a>
+            <a href="#appearance">Appearance</a>
+          </nav>
+        </aside>
+
+        <form class="settings-form" id="settings-form" novalidate>
+          <section class="section" id="ritual" aria-labelledby="ritual-heading">
+            <div class="section-heading">
+              <h2 id="ritual-heading">Focus ritual</h2>
+              <p>01 / 03</p>
+            </div>
+
+            <div class="field">
+              <div>
+                <label class="field-label" for="focus-duration">Focus duration</label>
+                <span class="field-help">How long one interval lasts (1–120 minutes).</span>
+              </div>
+              <div class="field-control">
+                <div class="duration-row">
+                  <div class="duration-control">
+                    <input
+                      class="text-input"
+                      id="focus-duration"
+                      name="focusMinutes"
+                      type="number"
+                      min="1"
+                      max="120"
+                      value="25"
+                      aria-describedby="focus-error"
+                    />
+                    <span>minutes</span>
+                  </div>
+                  <div class="preset-group" role="group" aria-label="Common focus durations">
+                    <button class="preset-button" type="button" data-focus-preset="25">25m</button>
+                    <button class="preset-button" type="button" data-focus-preset="45">45m</button>
+                    <button class="preset-button" type="button" data-focus-preset="60">60m</button>
+                  </div>
+                </div>
+                <p class="field-error" id="focus-error" role="alert"></p>
+              </div>
+            </div>
+
+            <div class="field">
+              <div>
+                <span class="field-label">Short rest</span>
+                <span class="field-help">A small reset between intervals.</span>
+              </div>
+              <div
+                class="field-control choice-group"
+                role="radiogroup"
+                aria-label="Short rest duration"
+              >
+                <label class="choice">
+                  <input type="radio" name="short-rest" value="3" />
+                  <span>03 min</span>
+                </label>
+                <label class="choice">
+                  <input type="radio" name="short-rest" value="5" checked />
+                  <span>05 min</span>
+                </label>
+                <label class="choice">
+                  <input type="radio" name="short-rest" value="10" />
+                  <span>10 min</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="field">
+              <div>
+                <span class="field-label">Long rest</span>
+                <span class="field-help">For a complete change of pace.</span>
+              </div>
+              <div
+                class="field-control choice-group"
+                role="radiogroup"
+                aria-label="Long rest duration"
+              >
+                <label class="choice">
+                  <input type="radio" name="long-rest" value="10" />
+                  <span>10 min</span>
+                </label>
+                <label class="choice">
+                  <input type="radio" name="long-rest" value="15" checked />
+                  <span>15 min</span>
+                </label>
+                <label class="choice">
+                  <input type="radio" name="long-rest" value="20" />
+                  <span>20 min</span>
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <section class="section" id="sound" aria-labelledby="sound-heading">
+            <div class="section-heading">
+              <h2 id="sound-heading">Sound &amp; alerts</h2>
+              <p>02 / 03</p>
+            </div>
+
+            <div class="toggle-row">
+              <div class="toggle-copy">
+                <strong>End-of-interval sound</strong>
+                <span>Plays graduation music when focus, short rest, or long rest finishes.</span>
+              </div>
+              <div class="toggle-actions">
+                <button class="preview-sound-button" id="preview-sound" type="button">Preview</button>
+                <label class="switch">
+                  <span class="sr-only">Enable end-of-interval sound</span>
+                  <input id="sound-enabled" type="checkbox" checked />
+                  <span class="switch-track" aria-hidden="true"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="toggle-row">
+              <div class="toggle-copy">
+                <strong>Keep screen awake</strong>
+                <span>Prevent the display from sleeping during focus.</span>
+              </div>
+              <label class="switch">
+                <span class="sr-only">Keep screen awake</span>
+                <input id="keep-awake" type="checkbox" checked />
+                <span class="switch-track" aria-hidden="true"></span>
+              </label>
+            </div>
+          </section>
+
+          <section class="section" id="appearance" aria-labelledby="appearance-heading">
+            <div class="section-heading">
+              <h2 id="appearance-heading">Appearance</h2>
+              <p>03 / 03</p>
+            </div>
+
+            <div class="field">
+              <div>
+                <label class="field-label" for="theme">Interface tone</label>
+                <span class="field-help">The quiet, light palette is the Morrow default.</span>
+              </div>
+              <div class="field-control">
+                <select id="theme" name="theme">
+                  <option value="light" selected>Quiet light</option>
+                  <option value="dark">Quiet dark</option>
+                  <option value="system">System preference</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="toggle-row">
+              <div class="toggle-copy">
+                <strong>Reduced motion</strong>
+                <span>Keep transitions still and understated.</span>
+              </div>
+              <label class="switch">
+                <span class="sr-only">Enable reduced motion</span>
+                <input id="reduced-motion" type="checkbox" />
+                <span class="switch-track" aria-hidden="true"></span>
+              </label>
+            </div>
+          </section>
+
+          <div class="actions">
+            <button class="reset-button" id="reset-defaults" type="button" disabled>Reset defaults</button>
+            <div class="actions-right">
+              <p class="save-status" id="save-status" role="status" aria-live="polite"></p>
+              <button class="save-button" type="submit">Save changes</button>
+            </div>
+          </div>
+        </form>
+      </main>
+
+      <footer class="footer">
+        <div class="footer-inner">
+          <span>Morrow <span aria-hidden="true">·</span> An instrument for unhurried attention.</span>
+          <a class="footer-link" href="./index.html">Back to workspace</a>
+        </div>
+      </footer>
+    </div>
+
+    <script src="audio.js"></script>
+    <script>
+      (() => {
+        const STORAGE_KEY = "morrow.settings";
+        const DEFAULTS = {
+          focusMinutes: 25,
+          shortRestMinutes: 5,
+          longRestMinutes: 15,
+          soundEnabled: true,
+          keepAwake: true,
+          theme: "light",
+          reducedMotion: false
+        };
+
+        const form = document.getElementById("settings-form");
+        const focusInput = document.getElementById("focus-duration");
+        const focusError = document.getElementById("focus-error");
+        const soundInput = document.getElementById("sound-enabled");
+        const keepAwakeInput = document.getElementById("keep-awake");
+        const themeSelect = document.getElementById("theme");
+        const reducedMotionInput = document.getElementById("reduced-motion");
+        const previewValue = document.getElementById("preview-value");
+        const saveStatus = document.getElementById("save-status");
+        const resetBtn = document.getElementById("reset-defaults");
+        const previewSoundBtn = document.getElementById("preview-sound");
+        const presetButtons = Array.from(document.querySelectorAll("[data-focus-preset]"));
+        const navLinks = Array.from(document.querySelectorAll("#settings-nav a"));
+        const sections = Array.from(document.querySelectorAll(".settings-form .section"));
+
+        function formatTwo(n) {
+          return String(n).padStart(2, "0");
+        }
+
+        function loadSettings() {
+          try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) return { ...DEFAULTS };
+            const parsed = JSON.parse(raw);
+            return { ...DEFAULTS, ...parsed };
+          } catch {
+            return { ...DEFAULTS };
+          }
+        }
+
+        function readFormValues() {
+          const shortChecked = form.querySelector('input[name="short-rest"]:checked');
+          const longChecked = form.querySelector('input[name="long-rest"]:checked');
+          return {
+            focusMinutes: Number(focusInput.value),
+            shortRestMinutes: shortChecked ? Number(shortChecked.value) : DEFAULTS.shortRestMinutes,
+            longRestMinutes: longChecked ? Number(longChecked.value) : DEFAULTS.longRestMinutes,
+            soundEnabled: Boolean(soundInput.checked),
+            keepAwake: Boolean(keepAwakeInput.checked),
+            theme: themeSelect.value || DEFAULTS.theme,
+            reducedMotion: Boolean(reducedMotionInput.checked)
+          };
+        }
+
+        function applyAppearance(settings) {
+          const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+          const resolvedTheme = settings.theme === "system" ? (prefersDark ? "dark" : "light") : settings.theme;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.body.dataset.theme = resolvedTheme;
+          document.body.dataset.reducedMotion = settings.reducedMotion ? "true" : "false";
+        }
+
+        function populateForm(settings) {
+          focusInput.value = String(settings.focusMinutes);
+          const shortRadio = form.querySelector(`input[name="short-rest"][value="${settings.shortRestMinutes}"]`);
+          if (shortRadio) shortRadio.checked = true;
+          const longRadio = form.querySelector(`input[name="long-rest"][value="${settings.longRestMinutes}"]`);
+          if (longRadio) longRadio.checked = true;
+          soundInput.checked = Boolean(settings.soundEnabled);
+          keepAwakeInput.checked = Boolean(settings.keepAwake);
+          themeSelect.value = settings.theme;
+          reducedMotionInput.checked = Boolean(settings.reducedMotion);
+          syncUI();
+          applyAppearance(settings);
+        }
+
+        function isEqual(a, b) {
+          return (
+            a.focusMinutes === b.focusMinutes &&
+            a.shortRestMinutes === b.shortRestMinutes &&
+            a.longRestMinutes === b.longRestMinutes &&
+            a.soundEnabled === b.soundEnabled &&
+            a.keepAwake === b.keepAwake &&
+            a.theme === b.theme &&
+            a.reducedMotion === b.reducedMotion
+          );
+        }
+
+        function syncUI() {
+          const current = readFormValues();
+          const focusNum = Number.isFinite(current.focusMinutes) && current.focusMinutes >= 1 ? Math.round(current.focusMinutes) : DEFAULTS.focusMinutes;
+          previewValue.textContent = `${formatTwo(focusNum)} · ${formatTwo(current.shortRestMinutes)} · ${formatTwo(current.longRestMinutes)} min`;
+
+          presetButtons.forEach((btn) => {
+            const active = Number(btn.dataset.focusPreset) === current.focusMinutes;
+            btn.setAttribute("aria-pressed", active ? "true" : "false");
+          });
+
+          previewSoundBtn.disabled = !current.soundEnabled;
+          resetBtn.disabled = isEqual(current, DEFAULTS);
+        }
+
+        function validateFocus() {
+          const raw = focusInput.value.trim();
+          const value = Number(raw);
+          if (!raw || !Number.isInteger(value) || value < 1 || value > 120) {
+            focusInput.setAttribute("aria-invalid", "true");
+            focusError.textContent = "Enter a whole number between 1 and 120 minutes.";
+            return false;
+          }
+          focusInput.removeAttribute("aria-invalid");
+          focusError.textContent = "";
+          return true;
+        }
+
+        let isPreviewing = false;
+
+        function stopPreview() {
+          if (window.MorrowAudio) {
+            window.MorrowAudio.stop();
+          }
+          isPreviewing = false;
+          previewSoundBtn.textContent = "Preview";
+        }
+
+        presetButtons.forEach((btn) => {
+          btn.addEventListener("click", () => {
+            focusInput.value = btn.dataset.focusPreset;
+            validateFocus();
+            syncUI();
+            saveStatus.textContent = "Unsaved changes.";
+          });
+        });
+
+        previewSoundBtn.addEventListener("click", () => {
+          if (isPreviewing) {
+            stopPreview();
+            saveStatus.textContent = "Preview stopped.";
+            return;
+          }
+          if (!window.MorrowAudio) return;
+          isPreviewing = true;
+          previewSoundBtn.textContent = "Stop";
+          saveStatus.textContent = "Playing graduation music preview.";
+          window.MorrowAudio.playGraduationMusic({
+            onEnded: () => {
+              isPreviewing = false;
+              previewSoundBtn.textContent = "Preview";
+            }
+          });
+        });
+
+        soundInput.addEventListener("change", () => {
+          if (!soundInput.checked && isPreviewing) {
+            stopPreview();
+          }
+        });
+
+        form.addEventListener("input", () => {
+          validateFocus();
+          const current = readFormValues();
+          syncUI();
+          applyAppearance(current);
+          saveStatus.textContent = "Unsaved changes.";
+        });
+
+        form.addEventListener("change", () => {
+          const current = readFormValues();
+          syncUI();
+          applyAppearance(current);
+        });
+
+        resetBtn.addEventListener("click", () => {
+          populateForm(DEFAULTS);
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULTS));
+          } catch {
+            // Ignore storage errors.
+          }
+          focusInput.removeAttribute("aria-invalid");
+          focusError.textContent = "";
+          saveStatus.textContent = "Defaults restored and saved.";
+        });
+
+        form.addEventListener("submit", (event) => {
+          event.preventDefault();
+          if (!validateFocus()) {
+            focusInput.focus();
+            saveStatus.textContent = "Check focus duration before saving.";
+            return;
+          }
+          const settings = readFormValues();
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+          } catch {
+            // Ignore storage errors.
+          }
+          applyAppearance(settings);
+          syncUI();
+          saveStatus.textContent = `Saved — Focus ${settings.focusMinutes}m, Short rest ${settings.shortRestMinutes}m, Long rest ${settings.longRestMinutes}m.`;
+        });
+
+        function setActiveNav(id) {
+          navLinks.forEach((link) => {
+            const match = link.getAttribute("href") === `#${id}`;
+            if (match) {
+              link.setAttribute("aria-current", "location");
+            } else {
+              link.removeAttribute("aria-current");
+            }
+          });
+        }
+
+        navLinks.forEach((link) => {
+          link.addEventListener("click", () => {
+            const id = link.getAttribute("href").slice(1);
+            setActiveNav(id);
+          });
+        });
+
+        if ("IntersectionObserver" in window && sections.length) {
+          const observer = new IntersectionObserver(
+            (entries) => {
+              const visible = entries.find((entry) => entry.isIntersecting);
+              if (visible) setActiveNav(visible.target.id);
+            },
+            { rootMargin: "-25% 0px -60% 0px", threshold: 0 }
+          );
+          sections.forEach((section) => observer.observe(section));
+        }
+
+        populateForm(loadSettings());
+      })();
+    </script>
+  </body>
+</html>

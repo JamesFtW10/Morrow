@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Morrow is a quiet, single-purpose focus timer for unhurried work.">
+  <title>Morrow — A quiet focus timer</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="timer-page" data-mode="focus" data-state="idle">
+  <div class="page">
+    <header class="masthead">
+      <div class="masthead-inner">
+        <a class="brand" href="./index.html" aria-label="Morrow home">
+          <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+            <rect width="32" height="32" class="brand-mark-bg" />
+            <circle cx="16" cy="16" r="10.75" fill="none" class="brand-mark-ring" stroke-width="1.75" />
+            <path d="M16 16 L16 8.25 A7.75 7.75 0 0 1 19.875 22.712 Z" class="brand-mark-wedge" />
+          </svg>
+          <span class="brand-word">Morrow<span aria-hidden="true">.</span></span>
+        </a>
+        <p class="masthead-line">A quiet instrument for focused work.</p>
+        <div class="masthead-meta">
+          <p class="presence" aria-live="polite">
+            <span class="presence-dot" aria-hidden="true"></span>
+            <span class="presence-text" id="presence-text">At ease</span>
+          </p>
+          <time class="today" id="today-date" datetime="2026-11-06">Fri, 06 Nov</time>
+          <a class="settings-link" href="./settings.html" aria-label="Open Morrow settings">Settings</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="workspace" aria-label="Morrow focus workspace">
+      <section class="timer-stage" aria-labelledby="timer-heading">
+        <div class="stage-head">
+          <div class="session-marker">
+            <p class="session-index" id="session-index" aria-label="Interval three of four">03<span>/04</span></p>
+            <p class="session-name" id="session-name">Third interval</p>
+          </div>
+
+          <div class="mode-switch" role="radiogroup" aria-label="Choose an interval">
+            <button class="mode-option" type="button" role="radio" aria-checked="true" data-mode="focus" data-minutes="25">
+              <span>Focus</span>
+              <span class="mode-duration">25m</span>
+            </button>
+            <button class="mode-option" type="button" role="radio" aria-checked="false" data-mode="short" data-minutes="5">
+              <span>Short rest</span>
+              <span class="mode-duration">5m</span>
+            </button>
+            <button class="mode-option" type="button" role="radio" aria-checked="false" data-mode="long" data-minutes="15">
+              <span>Long rest</span>
+              <span class="mode-duration">15m</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="timer-body">
+          <h1 id="timer-heading" class="sr-only">Morrow focus timer</h1>
+          <p id="timer-description" class="sr-only">A countdown timer with focus, short rest, and long rest modes. Choose a mode, begin the interval, pause at any time, or reset to return to the full duration.</p>
+
+          <div class="clock-display" role="timer" aria-live="off" aria-labelledby="timer-heading" aria-describedby="timer-description">
+            <span class="clock-digits" id="clock-minutes">25</span><span class="clock-colon" aria-hidden="true">:</span><span class="clock-digits" id="clock-seconds">00</span>
+          </div>
+
+          <p class="interval-caption" id="interval-caption">
+            <span class="caption-dot" aria-hidden="true"></span>
+            <span id="interval-caption-text">Deep work · A single clear intention</span>
+          </p>
+
+          <div class="timer-actions" role="group" aria-label="Timer controls">
+            <button class="button-primary" id="toggle-timer" type="button">
+              <span class="button-icon icon-play" id="toggle-icon" aria-hidden="true"></span>
+              <span id="toggle-label">Begin interval</span>
+            </button>
+
+            <button class="button-secondary" id="reset-timer" type="button" disabled aria-label="Reset interval">
+              <svg viewBox="0 0 18 18" aria-hidden="true" focusable="false">
+                <path d="M4.25 6.4A5.6 5.6 0 1 1 3.4 10" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/>
+                <path d="M3.6 2.9v3.9h3.9" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>Reset</span>
+            </button>
+
+            <p class="timer-note" id="timer-note" aria-live="polite">One thing at a time.</p>
+          </div>
+        </div>
+
+        <figure class="interval-ruler" id="interval-ruler" style="--progress: 0;">
+          <figcaption class="ruler-caption">
+            <span>Interval progress</span>
+            <span class="ruler-total" id="ruler-total">25 minutes</span>
+          </figcaption>
+
+          <div class="ruler-track" id="ruler-track" aria-hidden="true">
+            <span class="ruler-fill"></span>
+            <span class="ruler-marker"></span>
+          </div>
+
+          <div class="ruler-labels" id="ruler-labels" aria-hidden="true">
+            <span>00</span><span>05</span><span>10</span><span>15</span><span>20</span><span>25</span>
+          </div>
+        </figure>
+
+        <div class="finish-panel" id="finish-panel" role="status" aria-live="polite" aria-hidden="true">
+          <p class="finish-kicker">Interval complete</p>
+          <p class="finish-time" aria-hidden="true">00:00</p>
+          <p class="finish-title" id="finish-title">Let the work settle.</p>
+          <div class="finish-actions">
+            <button class="button-primary" id="finish-next" type="button">
+              <span class="button-icon icon-play" aria-hidden="true"></span>
+              <span id="finish-next-label">Take a short rest</span>
+            </button>
+            <button class="button-secondary" id="finish-return" type="button">Return to timer</button>
+            <button class="button-secondary" id="finish-stop-audio" type="button" hidden>Stop music</button>
+          </div>
+        </div>
+      </section>
+
+      <aside class="session-rail" aria-label="Session notes">
+        <section class="rail-section intention-section" aria-labelledby="intention-label">
+          <div class="section-heading">
+            <h2 id="intention-label">In focus</h2>
+            <p class="section-meta" id="intention-mode-tag">Focus · 25 min</p>
+          </div>
+          <label class="sr-only" for="intention">Current intention</label>
+          <textarea class="intention-input" id="intention" rows="3" spellcheck="false">Shape the first five minutes of the product.</textarea>
+          <p class="intention-meta"><span>Deep work</span><span aria-hidden="true">·</span><span>No interruptions</span></p>
+        </section>
+
+        <section class="rail-section cadence-section" aria-labelledby="cadence-heading">
+          <div class="section-heading">
+            <h2 id="cadence-heading">Today</h2>
+            <p class="section-meta" id="cadence-count">2 / 4</p>
+          </div>
+
+          <ol class="cadence-list" id="cadence-list">
+            <li class="cadence-item is-done" data-status="done">
+              <button class="cadence-trigger" type="button" aria-pressed="true">
+                <span class="cadence-number">01</span>
+                <span class="cadence-copy">
+                  <span class="cadence-title">Tidy the working file</span>
+                  <span class="cadence-time">09:00 · 25 min</span>
+                </span>
+                <span class="cadence-mark" aria-hidden="true"></span>
+                <span class="sr-only cadence-sr">Complete, select to toggle</span>
+              </button>
+            </li>
+            <li class="cadence-item is-done" data-status="done">
+              <button class="cadence-trigger" type="button" aria-pressed="true">
+                <span class="cadence-number">02</span>
+                <span class="cadence-copy">
+                  <span class="cadence-title">Collect the open questions</span>
+                  <span class="cadence-time">09:30 · 25 min</span>
+                </span>
+                <span class="cadence-mark" aria-hidden="true"></span>
+                <span class="sr-only cadence-sr">Complete, select to toggle</span>
+              </button>
+            </li>
+            <li class="cadence-item is-current" data-status="current">
+              <button class="cadence-trigger" type="button" aria-pressed="false">
+                <span class="cadence-number">03</span>
+                <span class="cadence-copy">
+                  <span class="cadence-title">Shape the first-run moment</span>
+                  <span class="cadence-time">Now · 25 min</span>
+                </span>
+                <span class="cadence-mark" aria-hidden="true"></span>
+                <span class="sr-only cadence-sr">Currently active, select to mark complete</span>
+              </button>
+            </li>
+            <li class="cadence-item is-next" data-status="next">
+              <button class="cadence-trigger" type="button" aria-pressed="false">
+                <span class="cadence-number">04</span>
+                <span class="cadence-copy">
+                  <span class="cadence-title">Read it end to end</span>
+                  <span class="cadence-time">Next</span>
+                </span>
+                <span class="cadence-mark" aria-hidden="true"></span>
+                <span class="sr-only cadence-sr">Up next, select to mark complete</span>
+              </button>
+            </li>
+          </ol>
+        </section>
+
+        <section class="rail-section parking-section" aria-labelledby="parking-label">
+          <div class="section-heading">
+            <h2 id="parking-label">If it can wait</h2>
+            <p class="section-meta">Park it here</p>
+          </div>
+          <label class="sr-only" for="parking">Leave a thought for later</label>
+          <textarea class="parking-input" id="parking" rows="2" placeholder="Leave the thought at the door…"></textarea>
+        </section>
+      </aside>
+    </main>
+
+    <footer class="page-footer">
+      <div class="footer-inner">
+        <p class="footer-shortcuts" aria-label="Keyboard shortcuts">
+          <span><kbd>Space</kbd> Start or pause</span>
+          <span aria-hidden="true">·</span>
+          <span><kbd>R</kbd> Reset</span>
+          <span aria-hidden="true">·</span>
+          <span><kbd>1</kbd>–<kbd>3</kbd> Mode</span>
+        </p>
+        <p class="footer-credit">Morrow <span aria-hidden="true">·</span> An instrument for unhurried attention.</p>
+      </div>
+    </footer>
+  </div>
+
+  <script src="audio.js"></script>
+  <script>
+    (() => {
+      const SETTINGS_KEY = "morrow.settings";
+      const DEFAULT_SETTINGS = {
+        focusMinutes: 25,
+        shortRestMinutes: 5,
+        longRestMinutes: 15,
+        soundEnabled: true,
+        keepAwake: true,
+        theme: "light",
+        reducedMotion: false
+      };
+
+      function loadSettings() {
+        try {
+          const raw = localStorage.getItem(SETTINGS_KEY);
+          if (!raw) return { ...DEFAULT_SETTINGS };
+          return { ...DEFAULT_SETTINGS, ...JSON.parse(raw) };
+        } catch {
+          return { ...DEFAULT_SETTINGS };
+        }
+      }
+
+      function buildRulerLabels(minutes) {
+        const labels = [];
+        for (let i = 0; i <= 5; i++) {
+          const val = Math.round((minutes * i) / 5);
+          labels.push(String(val).padStart(2, "0"));
+        }
+        return labels;
+      }
+
+      const activeSettings = loadSettings();
+
+      function applySettingsToDom(settings) {
+        const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const resolvedTheme = settings.theme === "system" ? (prefersDark ? "dark" : "light") : settings.theme;
+        document.documentElement.dataset.theme = resolvedTheme;
+        document.body.dataset.theme = resolvedTheme;
+        document.body.dataset.reducedMotion = settings.reducedMotion ? "true" : "false";
+      }
+
+      const MODES = {
+        focus: {
+          minutes: Math.max(1, Math.min(120, Number(activeSettings.focusMinutes) || 25)),
+          caption: "Deep work · A single clear intention",
+          tag: `Focus · ${Math.max(1, Math.min(120, Number(activeSettings.focusMinutes) || 25))} min`,
+          rulerLabels: buildRulerLabels(Math.max(1, Math.min(120, Number(activeSettings.focusMinutes) || 25))),
+          minorStep: `calc(100% / ${Math.max(1, Math.min(120, Number(activeSettings.focusMinutes) || 25))})`,
+          majorStep: "20%",
+          finishTitle: "Let the work settle.",
+          nextMode: "short",
+          nextLabel: "Take a short rest"
+        },
+        short: {
+          minutes: Number(activeSettings.shortRestMinutes) || 5,
+          caption: "Short rest · Look beyond the screen",
+          tag: `Short rest · ${Number(activeSettings.shortRestMinutes) || 5} min`,
+          rulerLabels: buildRulerLabels(Number(activeSettings.shortRestMinutes) || 5),
+          minorStep: `calc(100% / ${Number(activeSettings.shortRestMinutes) || 5})`,
+          majorStep: "20%",
+          finishTitle: "Eyes away from the glass.",
+          nextMode: "focus",
+          nextLabel: "Return to focus"
+        },
+        long: {
+          minutes: Number(activeSettings.longRestMinutes) || 15,
+          caption: "Long rest · Let the work settle",
+          tag: `Long rest · ${Number(activeSettings.longRestMinutes) || 15} min`,
+          rulerLabels: buildRulerLabels(Number(activeSettings.longRestMinutes) || 15),
+          minorStep: `calc(100% / ${Number(activeSettings.longRestMinutes) || 15})`,
+          majorStep: "20%",
+          finishTitle: "Step back before the next cycle.",
+          nextMode: "focus",
+          nextLabel: "Return to focus"
+        }
+      };
+
+      const ORDINALS = ["First", "Second", "Third", "Fourth"];
+      const body = document.body;
+      const clockMinutes = document.getElementById("clock-minutes");
+      const clockSeconds = document.getElementById("clock-seconds");
+      const toggleBtn = document.getElementById("toggle-timer");
+      const toggleIcon = document.getElementById("toggle-icon");
+      const toggleLabel = document.getElementById("toggle-label");
+      const resetBtn = document.getElementById("reset-timer");
+      const timerNote = document.getElementById("timer-note");
+      const presenceText = document.getElementById("presence-text");
+      const captionText = document.getElementById("interval-caption-text");
+      const intentionModeTag = document.getElementById("intention-mode-tag");
+      const rulerEl = document.getElementById("interval-ruler");
+      const rulerTrack = document.getElementById("ruler-track");
+      const rulerTotal = document.getElementById("ruler-total");
+      const rulerLabels = document.getElementById("ruler-labels");
+      const finishPanel = document.getElementById("finish-panel");
+      const finishTitle = document.getElementById("finish-title");
+      const finishNextBtn = document.getElementById("finish-next");
+      const finishNextLabel = document.getElementById("finish-next-label");
+      const finishReturnBtn = document.getElementById("finish-return");
+      const finishStopAudioBtn = document.getElementById("finish-stop-audio");
+      const modeButtons = Array.from(document.querySelectorAll(".mode-option"));
+      const intentionInput = document.getElementById("intention");
+      const parkingInput = document.getElementById("parking");
+      const cadenceItems = Array.from(document.querySelectorAll(".cadence-item"));
+      const cadenceCount = document.getElementById("cadence-count");
+      const sessionIndex = document.getElementById("session-index");
+      const sessionName = document.getElementById("session-name");
+      const todayDate = document.getElementById("today-date");
+
+      let currentMode = "focus";
+      let totalSeconds = MODES.focus.minutes * 60;
+      let remainingSeconds = totalSeconds;
+      let timerState = "idle"; // idle | running | paused | complete
+      let endTimestamp = 0;
+      let tickId = null;
+      let wakeLock = null;
+
+      modeButtons.forEach((btn) => {
+        const mode = btn.dataset.mode;
+        if (MODES[mode]) {
+          btn.dataset.minutes = String(MODES[mode].minutes);
+          const durEl = btn.querySelector(".mode-duration");
+          if (durEl) durEl.textContent = `${MODES[mode].minutes}m`;
+        }
+      });
+
+      applySettingsToDom(activeSettings);
+
+      async function requestWakeLock() {
+        if (!activeSettings.keepAwake || !("wakeLock" in navigator)) return;
+        try {
+          wakeLock = await navigator.wakeLock.request("screen");
+        } catch {
+          // Ignore wake lock errors if unsupported or denied.
+        }
+      }
+
+      async function releaseWakeLock() {
+        if (!wakeLock) return;
+        try {
+          await wakeLock.release();
+        } catch {
+          // Ignore release errors.
+        }
+        wakeLock = null;
+      }
+
+      function formatTwo(value) {
+        return String(Math.max(0, value)).padStart(2, "0");
+      }
+
+      function setTodayLabel() {
+        if (!todayDate) return;
+        const now = new Date();
+        const weekday = now.toLocaleDateString("en-US", { weekday: "short" });
+        const day = formatTwo(now.getDate());
+        const month = now.toLocaleDateString("en-US", { month: "short" });
+        todayDate.textContent = `${weekday}, ${day} ${month}`;
+        todayDate.setAttribute("datetime", now.toISOString().slice(0, 10));
+      }
+
+      function renderClock() {
+        const mins = Math.floor(remainingSeconds / 60);
+        const secs = remainingSeconds % 60;
+        const formatted = `${formatTwo(mins)}:${formatTwo(secs)}`;
+        clockMinutes.textContent = formatTwo(mins);
+        clockSeconds.textContent = formatTwo(secs);
+
+        const progress = totalSeconds > 0 ? Math.min(1, Math.max(0, (totalSeconds - remainingSeconds) / totalSeconds)) : 0;
+        rulerEl.style.setProperty("--progress", progress.toFixed(5));
+
+        if (timerState === "running") {
+          document.title = `${formatted} · Morrow`;
+        } else if (timerState === "paused") {
+          document.title = `${formatted} (Paused) · Morrow`;
+        } else if (timerState === "complete") {
+          document.title = "Interval complete · Morrow";
+        } else {
+          document.title = "Morrow — A quiet focus timer";
+        }
+
+        const atFull = remainingSeconds === totalSeconds && timerState === "idle";
+        resetBtn.disabled = atFull;
+      }
+
+      function renderControls() {
+        body.dataset.state = timerState;
+        body.dataset.mode = currentMode;
+
+        if (timerState === "running") {
+          presenceText.textContent = "In focus";
+          timerNote.textContent = "Stay with it.";
+          toggleLabel.textContent = "Pause interval";
+          toggleIcon.className = "button-icon icon-pause";
+          toggleIcon.innerHTML = "<span></span><span></span>";
+        } else if (timerState === "paused") {
+          presenceText.textContent = "Paused";
+          timerNote.textContent = "Your place is kept.";
+          toggleLabel.textContent = "Resume interval";
+          toggleIcon.className = "button-icon icon-play";
+          toggleIcon.innerHTML = "";
+        } else if (timerState === "complete") {
+          presenceText.textContent = "Complete";
+          timerNote.textContent = "Interval finished.";
+          toggleLabel.textContent = "Begin interval";
+          toggleIcon.className = "button-icon icon-play";
+          toggleIcon.innerHTML = "";
+        } else {
+          presenceText.textContent = "At ease";
+          timerNote.textContent = "One thing at a time.";
+          toggleLabel.textContent = "Begin interval";
+          toggleIcon.className = "button-icon icon-play";
+          toggleIcon.innerHTML = "";
+        }
+
+        const isComplete = timerState === "complete";
+        finishPanel.setAttribute("aria-hidden", isComplete ? "false" : "true");
+      }
+
+      function stopCompletionMusic() {
+        if (window.MorrowAudio) {
+          window.MorrowAudio.stop();
+        }
+        finishStopAudioBtn.hidden = true;
+      }
+
+      function playCompletionMusic() {
+        if (!activeSettings.soundEnabled || !window.MorrowAudio) return;
+        const started = window.MorrowAudio.playGraduationMusic({
+          onEnded: () => {
+            finishStopAudioBtn.hidden = true;
+          }
+        });
+        finishStopAudioBtn.hidden = !started;
+      }
+
+      function playControlSound(action) {
+        if (!activeSettings.soundEnabled || !window.MorrowAudio) return;
+        window.MorrowAudio.playControlSound(action);
+      }
+
+      function stopTicker() {
+        if (tickId !== null) {
+          window.clearInterval(tickId);
+          tickId = null;
+        }
+      }
+
+      function completeInterval() {
+        stopTicker();
+        releaseWakeLock();
+        remainingSeconds = 0;
+        timerState = "complete";
+        renderClock();
+        renderControls();
+        playCompletionMusic();
+      }
+
+      function startTimer() {
+        stopCompletionMusic();
+        if (window.MorrowAudio) {
+          window.MorrowAudio.unlock();
+        }
+        playControlSound("start");
+        if (timerState === "complete") {
+          remainingSeconds = totalSeconds;
+        }
+        timerState = "running";
+        endTimestamp = Date.now() + remainingSeconds * 1000;
+        requestWakeLock();
+        stopTicker();
+        tickId = window.setInterval(() => {
+          const left = Math.ceil((endTimestamp - Date.now()) / 1000);
+          if (left <= 0) {
+            completeInterval();
+          } else if (left !== remainingSeconds) {
+            remainingSeconds = left;
+            renderClock();
+          }
+        }, 250);
+        renderClock();
+        renderControls();
+      }
+
+      function pauseTimer() {
+        stopTicker();
+        releaseWakeLock();
+        playControlSound("pause");
+        remainingSeconds = Math.max(0, Math.ceil((endTimestamp - Date.now()) / 1000));
+        timerState = "paused";
+        renderClock();
+        renderControls();
+      }
+
+      function resetTimer() {
+        stopTicker();
+        releaseWakeLock();
+        stopCompletionMusic();
+        playControlSound("reset");
+        timerState = "idle";
+        remainingSeconds = totalSeconds;
+        renderClock();
+        renderControls();
+      }
+
+      function setMode(mode) {
+        if (!MODES[mode]) return;
+        stopCompletionMusic();
+        currentMode = mode;
+        const cfg = MODES[mode];
+        totalSeconds = cfg.minutes * 60;
+        stopTicker();
+        timerState = "idle";
+        remainingSeconds = totalSeconds;
+
+        modeButtons.forEach((btn) => {
+          const active = btn.dataset.mode === mode;
+          btn.setAttribute("aria-checked", active ? "true" : "false");
+        });
+
+        captionText.textContent = cfg.caption;
+        intentionModeTag.textContent = cfg.tag;
+        rulerTotal.textContent = `${cfg.minutes} minutes`;
+        rulerTrack.style.setProperty("--minor-step", cfg.minorStep);
+        rulerTrack.style.setProperty("--major-step", cfg.majorStep);
+        rulerLabels.innerHTML = cfg.rulerLabels.map((label) => `<span>${label}</span>`).join("");
+        finishTitle.textContent = cfg.finishTitle;
+        finishNextLabel.textContent = cfg.nextLabel;
+
+        renderClock();
+        renderControls();
+      }
+
+      function syncCadenceSummary() {
+        const doneCount = cadenceItems.filter((item) => item.dataset.status === "done").length;
+        cadenceCount.textContent = `${doneCount} / ${cadenceItems.length}`;
+
+        let activeIdx = cadenceItems.findIndex((item) => item.dataset.status === "current");
+        if (activeIdx === -1) {
+          activeIdx = Math.min(doneCount, cadenceItems.length - 1);
+        }
+        const displayIdx = activeIdx + 1;
+        sessionIndex.innerHTML = `${formatTwo(displayIdx)}<span>/${formatTwo(cadenceItems.length)}</span>`;
+        sessionIndex.setAttribute("aria-label", `Interval ${displayIdx} of ${cadenceItems.length}`);
+        sessionName.textContent = `${ORDINALS[activeIdx] || "Current"} interval`;
+      }
+
+      modeButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          setMode(btn.dataset.mode);
+        });
+      });
+
+      toggleBtn.addEventListener("click", () => {
+        if (timerState === "running") {
+          pauseTimer();
+        } else {
+          startTimer();
+        }
+      });
+
+      resetBtn.addEventListener("click", resetTimer);
+
+      finishReturnBtn.addEventListener("click", resetTimer);
+
+      finishStopAudioBtn.addEventListener("click", stopCompletionMusic);
+
+      finishNextBtn.addEventListener("click", () => {
+        const nextMode = MODES[currentMode].nextMode;
+        setMode(nextMode);
+        startTimer();
+      });
+
+      cadenceItems.forEach((item) => {
+        const trigger = item.querySelector(".cadence-trigger");
+        const sr = item.querySelector(".cadence-sr");
+        if (!trigger) return;
+
+        trigger.addEventListener("click", () => {
+          const isDone = item.dataset.status === "done";
+          const nextStatus = isDone ? "current" : "done";
+
+          if (nextStatus === "current") {
+            cadenceItems.forEach((other) => {
+              if (other !== item && other.dataset.status === "current") {
+                other.dataset.status = "next";
+                other.classList.remove("is-current");
+                other.classList.add("is-next");
+              }
+            });
+          }
+
+          item.dataset.status = nextStatus;
+          item.classList.remove("is-done", "is-current", "is-next");
+          item.classList.add(nextStatus === "done" ? "is-done" : "is-current");
+          trigger.setAttribute("aria-pressed", nextStatus === "done" ? "true" : "false");
+
+          if (sr) {
+            sr.textContent = nextStatus === "done"
+              ? "Complete, select to toggle"
+              : "Currently active, select to mark complete";
+          }
+
+          if (nextStatus === "done") {
+            const firstRemaining = cadenceItems.find((other) => other.dataset.status !== "done");
+            if (firstRemaining) {
+              cadenceItems.forEach((other) => {
+                if (other.dataset.status === "current") {
+                  other.dataset.status = "next";
+                  other.classList.remove("is-current");
+                  other.classList.add("is-next");
+                }
+              });
+              firstRemaining.dataset.status = "current";
+              firstRemaining.classList.remove("is-next");
+              firstRemaining.classList.add("is-current");
+            }
+          }
+
+          syncCadenceSummary();
+        });
+      });
+
+      try {
+        const savedIntention = localStorage.getItem("morrow.intention");
+        if (savedIntention !== null) intentionInput.value = savedIntention;
+        const savedParking = localStorage.getItem("morrow.parking");
+        if (savedParking !== null) parkingInput.value = savedParking;
+
+        intentionInput.addEventListener("input", () => {
+          localStorage.setItem("morrow.intention", intentionInput.value);
+        });
+        parkingInput.addEventListener("input", () => {
+          localStorage.setItem("morrow.parking", parkingInput.value);
+        });
+      } catch {
+        // Ignore storage errors in restricted contexts.
+      }
+
+      document.addEventListener("keydown", (event) => {
+        const target = event.target;
+        const isEditing = target && (target.tagName === "TEXTAREA" || target.tagName === "INPUT" || target.isContentEditable);
+        if (isEditing || event.metaKey || event.ctrlKey || event.altKey) return;
+
+        if (event.code === "Space" && target.tagName !== "BUTTON") {
+          event.preventDefault();
+          if (timerState === "running") pauseTimer();
+          else startTimer();
+        } else if (event.key === "r" || event.key === "R") {
+          event.preventDefault();
+          resetTimer();
+        } else if (event.key === "1") {
+          setMode("focus");
+        } else if (event.key === "2") {
+          setMode("short");
+        } else if (event.key === "3") {
+          setMode("long");
+        }
+      });
+
+      setTodayLabel();
+      setMode("focus");
+      syncCadenceSummary();
+    })();
+  </script>
+</body>
+</html>
