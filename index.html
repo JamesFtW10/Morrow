@@ -431,11 +431,46 @@
         finishPanel.setAttribute("aria-hidden", isComplete ? "false" : "true");
       }
 
+      function shouldLoopFocusMusic() {
+        return currentMode === "focus" && timerState === "running";
+      }
+
+      function startFocusMusic(restart = false) {
+        if (!activeSettings.soundEnabled || !window.MorrowAudio) return;
+        if (typeof window.MorrowAudio.playFocusMusic === "function") {
+          window.MorrowAudio.playFocusMusic({
+            restart,
+            shouldLoop: shouldLoopFocusMusic
+          });
+        }
+      }
+
+      function pauseFocusMusic() {
+        if (window.MorrowAudio && typeof window.MorrowAudio.pauseFocusMusic === "function") {
+          window.MorrowAudio.pauseFocusMusic();
+        }
+      }
+
+      function stopFocusMusic() {
+        if (window.MorrowAudio && typeof window.MorrowAudio.stopFocusMusic === "function") {
+          window.MorrowAudio.stopFocusMusic();
+        }
+      }
+
       function stopCompletionMusic() {
         if (window.MorrowAudio) {
-          window.MorrowAudio.stop();
+          if (typeof window.MorrowAudio.stopCompletion === "function") {
+            window.MorrowAudio.stopCompletion();
+          } else {
+            window.MorrowAudio.stop();
+          }
         }
         finishStopAudioBtn.hidden = true;
+      }
+
+      function stopAllMusic() {
+        stopCompletionMusic();
+        stopFocusMusic();
       }
 
       function playCompletionMusic() {
@@ -463,6 +498,7 @@
       function completeInterval() {
         stopTicker();
         releaseWakeLock();
+        stopFocusMusic();
         remainingSeconds = 0;
         timerState = "complete";
         renderClock();
@@ -480,6 +516,11 @@
           remainingSeconds = totalSeconds;
         }
         timerState = "running";
+        if (currentMode === "focus") {
+          startFocusMusic(false);
+        } else {
+          stopFocusMusic();
+        }
         endTimestamp = Date.now() + remainingSeconds * 1000;
         requestWakeLock();
         stopTicker();
@@ -499,6 +540,9 @@
       function pauseTimer() {
         stopTicker();
         releaseWakeLock();
+        if (currentMode === "focus") {
+          pauseFocusMusic();
+        }
         playControlSound("pause");
         remainingSeconds = Math.max(0, Math.ceil((endTimestamp - Date.now()) / 1000));
         timerState = "paused";
@@ -509,7 +553,7 @@
       function resetTimer() {
         stopTicker();
         releaseWakeLock();
-        stopCompletionMusic();
+        stopAllMusic();
         playControlSound("reset");
         timerState = "idle";
         remainingSeconds = totalSeconds;
@@ -519,7 +563,7 @@
 
       function setMode(mode) {
         if (!MODES[mode]) return;
-        stopCompletionMusic();
+        stopAllMusic();
         currentMode = mode;
         const cfg = MODES[mode];
         totalSeconds = cfg.minutes * 60;
@@ -562,6 +606,9 @@
       modeButtons.forEach((btn) => {
         btn.addEventListener("click", () => {
           setMode(btn.dataset.mode);
+          if (btn.dataset.mode === "focus") {
+            startFocusMusic(true);
+          }
         });
       });
 

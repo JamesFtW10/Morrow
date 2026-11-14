@@ -1,11 +1,15 @@
 (() => {
   const GRADUATION_TRACK_SRC = "./Philippine-Graduation.mp3";
+  const FOCUS_TRACK_SRC = "./Study-Frequency.mp3";
 
   let ctx = null;
   let completionAudio = null;
+  let focusAudio = null;
   let currentOnEnded = null;
+  let currentFocusShouldLoop = null;
   let audioPrimed = false;
   let isPlayingTrack = false;
+  let isPlayingFocus = false;
 
   function ensureContext() {
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -44,7 +48,31 @@
     return completionAudio;
   }
 
-  function stop() {
+  function ensureFocusTrack() {
+    if (!focusAudio) {
+      focusAudio = new Audio(FOCUS_TRACK_SRC);
+      focusAudio.preload = "auto";
+      focusAudio.addEventListener("ended", () => {
+        isPlayingFocus = false;
+        focusAudio.currentTime = 0;
+        if (typeof currentFocusShouldLoop === "function" && currentFocusShouldLoop()) {
+          isPlayingFocus = true;
+          const replayPromise = focusAudio.play();
+          if (replayPromise && typeof replayPromise.catch === "function") {
+            replayPromise.catch(() => {
+              isPlayingFocus = false;
+            });
+          }
+        }
+      });
+      focusAudio.addEventListener("error", () => {
+        isPlayingFocus = false;
+      });
+    }
+    return focusAudio;
+  }
+
+  function stopCompletion() {
     if (completionAudio) {
       try {
         completionAudio.pause();
@@ -59,6 +87,65 @@
       const cb = currentOnEnded;
       currentOnEnded = null;
       cb();
+    }
+  }
+
+  function stopFocusMusic() {
+    if (focusAudio) {
+      try {
+        focusAudio.pause();
+        focusAudio.currentTime = 0;
+      } catch {
+        // Ignore media reset errors.
+      }
+    }
+    isPlayingFocus = false;
+  }
+
+  function pauseFocusMusic() {
+    if (focusAudio) {
+      try {
+        focusAudio.pause();
+      } catch {
+        // Ignore media pause errors.
+      }
+    }
+    isPlayingFocus = false;
+  }
+
+  function stop() {
+    stopCompletion();
+    stopFocusMusic();
+  }
+
+  function playFocusMusic(options = {}) {
+    if (typeof options.shouldLoop === "function") {
+      currentFocusShouldLoop = options.shouldLoop;
+    }
+    stopCompletion();
+
+    const track = ensureFocusTrack();
+    if (!options.restart && isPlayingFocus && !track.paused) {
+      return true;
+    }
+
+    isPlayingFocus = true;
+    try {
+      track.muted = false;
+      track.volume = 0.85;
+      if (options.restart) {
+        track.currentTime = 0;
+      }
+      const playPromise = track.play();
+      if (playPromise && typeof playPromise.catch === "function") {
+        playPromise.catch(() => {
+          isPlayingFocus = false;
+        });
+      }
+      return true;
+    } catch {
+      isPlayingFocus = false;
+      return false;
     }
   }
 
@@ -157,8 +244,12 @@
   }
 
   window.MorrowAudio = {
+    playFocusMusic,
+    pauseFocusMusic,
+    stopFocusMusic,
     playGraduationMusic,
     playControlSound,
+    stopCompletion,
     stop,
     unlock
   };
